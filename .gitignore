@@ -1,0 +1,14 @@
+# User-specific & local secret configuration files
+appsettings.Development.json
+appsettings.Local.json
+*.env
+
+# .NET Build artifacts & binary outputs
+bin/
+obj/
+.vs/
+.vscode/
+
+# System & OS files
+.DS_Store
+Thumbs.db
