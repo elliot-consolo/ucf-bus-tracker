@@ -15,7 +15,7 @@ public class VehicleDto
     public double Longitude {get; set;}
 
     [JsonPropertyName("Name")]
-    public string Name {get; set;} = string.Empty;
+    public string VehicleName {get; set;} = string.Empty;
 
     [JsonPropertyName("RouteID")]
     public int RouteID {get; set;}

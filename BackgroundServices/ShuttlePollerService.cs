@@ -56,8 +56,8 @@ public class ShuttlePollerService : BackgroundService
         using var connection = new NpgsqlConnection(connectionString);
 
         string sql = @"
-            INSERT INTO bus_snapshots (vehicle_id, route_id, latitude, longitude, speed, recorded_at)
-            VALUES (@VehicleID, @RouteID, @Latitude, @Longitude, @Speed, NOW());";
+            INSERT INTO bus_snapshots (vehicle_id, route_id, latitude, longitude, speed, recorded_at, vehicle_name)
+            VALUES (@VehicleID, @RouteID, @Latitude, @Longitude, @Speed, NOW(), @VehicleName);";
         // Dapper executes batch insert for all items in list
         int rowsInserted = await connection.ExecuteAsync(sql, vehicles);
         _logger.LogInformation("Logged {Count} shuttle snapshots to BusDb.", rowsInserted);

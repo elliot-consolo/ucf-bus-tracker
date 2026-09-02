@@ -20,6 +20,7 @@ public class CongestionController : ControllerBase
         string sql = @"
             SELECT 
                 snapshot_id AS SnapshotId,
+                vehicle_name AS VehicleName,
                 vehicle_id AS VehicleID,
                 route_id AS RouteID,
                 latitude,
