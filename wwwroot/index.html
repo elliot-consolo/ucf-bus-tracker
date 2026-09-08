@@ -136,7 +136,11 @@
 
             const ctx = document.getElementById('transitChart').getContext('2d');
 
-            const transitChart = new Chart(ctx, {
+            if(transitChart) {
+                transitChart.destroy();
+            }
+
+            transitChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     //minute labels array
@@ -157,6 +161,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         x: {
                             grid: { display: false },

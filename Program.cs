@@ -1,7 +1,14 @@
 using BusData.Service;
 using BusData.Repositories;
+using System.Data;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddScoped<IDbConnection>((sp) => 
+    new NpgsqlConnection(connectionString));
 
 builder.Services.AddHttpClient();
 

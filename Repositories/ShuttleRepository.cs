@@ -1,32 +1,31 @@
 namespace BusData.Repositories;
-
 using Dapper;
-using Npgsql;
 using BusData.Models;
+using System.Data;
 
 public class ShuttleRepository
 {
-    private readonly string _connectionString;
-    public ShuttleRepository (IConfiguration configuration){
-        _connectionString = configuration.GetConnectionString("DefaultConnection");
+    private readonly IDbConnection _db;
+    public ShuttleRepository (IDbConnection db){
+        _db = db;
     }
 
     //get routes for dropdown
     public async Task<IEnumerable<RouteDto>> GetRoutesAsync()
     {
-        using var connection = new NpgsqlConnection(_connectionString);
+        
         string sql = @"
             SELECT 
                 route_id AS RouteId,
                 route_name AS RouteName
             FROM routes
             ORDER BY route_id;";
-        return await connection.QueryAsync<RouteDto>(sql);
+        return await _db.QueryAsync<RouteDto>(sql);
     }
 
     public async Task<IEnumerable<StopDto>> GetStopsByRouteAsync(string routeId)
     {
-        using var connection = new NpgsqlConnection(_connectionString);
+
 
         string sql = @"
             SELECT
@@ -40,12 +39,12 @@ public class ShuttleRepository
             FROM stops
             WHERE route_id = @RouteId
             ORDER BY sequence_order;";
-        return await connection.QueryAsync<StopDto>(sql, new {RouteId = routeId});
+        return await _db.QueryAsync<StopDto>(sql, new {RouteId = routeId});
     }
 
     public async Task<IEnumerable<TransitAnalyticsDto>> GetAnalyticsAsync(string routeId, int startStopId, int endStopId)
     {
-        using var connection = new NpgsqlConnection(_connectionString);
+        
 
         var parameters = new
         {
@@ -145,7 +144,7 @@ public class ShuttleRepository
                 SELECT minute_bucket
                 FROM generate_series(
                     TIMESTAMP '2026-09-07 07:00:00',
-                    TIMESTAMP '2026-09-07 19:00:00',
+                    TIMESTAMP '2026-09-07 22:00:00',
                     INTERVAL '1 minute'
                 ) AS minute_bucket
             )
@@ -160,7 +159,7 @@ public class ShuttleRepository
             GROUP BY m.minute_bucket
             ORDER BY m.minute_bucket;";
         
-        return await connection.QueryAsync<TransitAnalyticsDto>(sql, parameters);
+        return await _db.QueryAsync<TransitAnalyticsDto>(sql, parameters);
         
     }
 }
