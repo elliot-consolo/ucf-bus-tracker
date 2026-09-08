@@ -12,8 +12,8 @@ public class ShuttlePollerService : BackgroundService
     private readonly ILogger<ShuttlePollerService> _logger;
 
     public ShuttlePollerService(
-        IHttpClientFactory httpClientFactory, 
-        IConfiguration configuration, 
+        IHttpClientFactory httpClientFactory,
+        IConfiguration configuration,
         ILogger<ShuttlePollerService> logger)
     {
         _httpClientFactory = httpClientFactory;

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCF Shuttle Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h2>UCF Transit Analytics</h2>
+
+    <div class="controls-card">
+        
+        <div class="form-group">
+            <label for="routeSelect">Select Route</label>
+            <select id="routeSelect">
+                <option value="">-- Choose a Route --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="startStopSelect">Start Stop</label>
+            <select id="startStopSelect" disabled>
+                <option value="">-- Select Route First --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="endStopSelect">End Stop</label>
+            <select id="endStopSelect" disabled>
+                <option value="">-- Select Route First --</option>
+            </select>
+        </div>
+
+        <button id="loadChartBtn" onclick="fetchChartData()">Update Chart</button>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="transitChart"></canvas>
+    </div>
+
+    <script>
+        let transitChart = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadRoutes();
+        });
+
+        async function loadRoutes() {
+            try {
+                const response = await fetch("api/transit/routes");
+                const routes = await response.json();
+
+                const routeSelect = document.getElementById('routeSelect');
+                routeSelect.innerHTML = '<option value="">-- Choose a Route --</option>';
+
+                routes.forEach(route => {
+                    const option = document.createElement('option');
+                    option.value = route.routeId;
+                    option.text = `${route.routeName}`;
+                    routeSelect.appendChild(option);
+                });
+            }
+            catch (err) {
+                console.error("Error loading routes:", err);
+            }
+        }
+
+        document.getElementById('routeSelect').addEventListener('change', async (e) => {
+            const routeId = e.target.value;
+            const startSelect = document.getElementById('startStopSelect');
+            const endSelect = document.getElementById('endStopSelect');
+
+            if (!routeId) {
+                startSelect.innerHTML = '<option value="">-- Select Route First --</option>';
+                endSelect.innerHTML = '<option value="">-- Select Route First --</option>';
+                startSelect.disabled = true;
+                endSelect.disabled = true;
+                return;
+            }
+
+            try {
+                const response = await fetch(`api/transit/stops?routeId=${encodeURIComponent(routeId)}`);
+                const stops = await response.json();
+
+                populateStopsDropdown(startSelect, stops, "-- Select Start Stop --");
+                populateStopsDropdown(endSelect, stops, "-- Select End Stop --");
+
+                startSelect.disabled = false;
+                endSelect.disabled = false;
+            }
+            catch (err) {
+                console.error("Error loading stops:", err);
+            }
+        });
+
+        function populateStopsDropdown(dropdownElement, stops, dropdownText) {
+            dropdownElement.innerHTML = `<option value="">${dropdownText}</option>`;
+            stops.forEach(stop => {
+                const option = document.createElement('option');
+                option.value = stop.sequenceOrder;
+                option.text = `Stop ${stop.sequenceOrder} - ${stop.stopName}`;
+                dropdownElement.appendChild(option);
+            });
+        }
+
+        async function fetchChartData() {
+            const routeId = document.getElementById('routeSelect').value;
+            const startStopId = document.getElementById('startStopSelect').value;
+            const endStopId = document.getElementById('endStopSelect').value;
+
+            if (!routeId || !startStopId || !endStopId) {
+                alert("Please select a Route, Start Stop, and End Stop.");
+                return;
+            }
+
+            if (startStopId === endStopId) {
+                alert("Start Stop and End Stop cannot be the same.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`api/congestion/analytics?routeId=${encodeURIComponent(routeId)}&startStopId=${startStopId}&endStopId=${endStopId}`);
+                const data = await response.json();
+
+                renderChart(data);
+            } catch (error) {
+                console.error("Failed to load shuttle data from API:", error);
+            }
+        }
+
+        function renderChart(apiData) {
+
+            const ctx = document.getElementById('transitChart').getContext('2d');
+
+            const transitChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    //minute labels array
+                    labels: apiData.map(d => d.timeLabel),
+                    datasets: [{
+                        label: 'Average Transit Duration (Min)',
+                        //minute data array
+                        data: apiData.map(d => d.avgDurationMinutes),
+
+                        spanGaps: true,
+
+                        borderColor: '#007bff',
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        borderWidth: 2,
+                        tension: 0.2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                //reduce label ticks
+                                callback: function (val, index) {
+                                    const label = this.getLabelForValue(val);
+                                    return label.includes(':00') ? label : '';
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Minutes' }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>

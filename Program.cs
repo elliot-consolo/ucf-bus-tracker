@@ -1,4 +1,5 @@
 using BusData.Service;
+using BusData.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddHostedService<ShuttlePollerService>();
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<ShuttleRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -21,6 +23,9 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "UCF Bus API");
     });
 }
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseAuthorization();
 app.MapControllers();
