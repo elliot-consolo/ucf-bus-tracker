@@ -155,7 +155,7 @@ public class ShuttleRepository
                 ROUND((AVG(vt.trip_time)::numeric),1) AS AvgDurationMinutes
             FROM minutes m
             LEFT JOIN valid_trips vt
-                ON vt.trip_minute::time = m.minute_bucket::time
+                ON (vt.trip_minute AT TIME ZONE 'America/New_York')::time = m.minute_bucket::time
             GROUP BY m.minute_bucket
             ORDER BY m.minute_bucket;";
         
