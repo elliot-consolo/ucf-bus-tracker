@@ -2,10 +2,12 @@ INSERT INTO routes (route_id, route_name)
 VALUES 
     ('68', 'Knights Express'),
     ('69', 'Pegasus Express'),
-    ('3', 'Grocery Shuttle'),
+    ('3', 'DT Grocery Shuttle'),
+    ('10', 'Grocery Shuttle'),
     ('27', 'Health Sciences Campus'),
     ('17', 'UCF Downtown'),
     ('32', 'Rosen College Shuttle'),
+    ('66', 'Waterford Lake Shuttle'),
     ('70', 'Emergency Housing TownePlace'),
     
     ('4', 'Route 1'),
