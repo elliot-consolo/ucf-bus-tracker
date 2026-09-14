@@ -1,29 +1,30 @@
-INSERT INTO routes (route_id, route_name)
+INSERT INTO routes (route_id, route_name, list_order)
 VALUES 
-    ('68', 'Knights Express'),
-    ('69', 'Pegasus Express'),
-    ('3', 'DT Grocery Shuttle'),
-    ('10', 'Grocery Shuttle'),
-    ('27', 'Health Sciences Campus'),
-    ('17', 'UCF Downtown'),
-    ('32', 'Rosen College Shuttle'),
-    ('66', 'Waterford Lake Shuttle'),
-    ('70', 'Emergency Housing TownePlace'),
+    ('68', 'Knights Express', 11),
+    ('69', 'Pegasus Express', 12),
+    ('3', 'DT Grocery Shuttle', 16),
+    ('10', 'Grocery Shuttle', 13),
+    ('27', 'Health Sciences Campus', 14),
+    ('17', 'UCF Downtown', 15),
+    ('32', 'Rosen College Shuttle', 17),
+    ('66', 'Waterford Lake Shuttle', 18),
+    ('70', 'Emergency Housing TownePlace', 19),
     
-    ('4', 'Route 1'),
-    ('18', 'Route 2'),
-    ('56', 'Route 3'),
-    ('57', 'Route 4'),
-    ('21', 'Route 5'),
-    ('22', 'Route 6'),
-    ('23', 'Route 7'),
-    ('24', 'Route 8'),
-    ('58', 'Route 9'),
-    ('5', 'Route 10')
+    ('4', 'Route 1', 1),
+    ('18', 'Route 2', 2),
+    ('56', 'Route 3', 3),
+    ('57', 'Route 4', 4),
+    ('21', 'Route 5', 5),
+    ('22', 'Route 6', 6),
+    ('23', 'Route 7', 7),
+    ('24', 'Route 8', 8),
+    ('58', 'Route 9', 9),
+    ('5', 'Route 10', 10)
 ON CONFLICT (route_id) 
 DO UPDATE SET 
     route_id = EXCLUDED.route_id, 
-    route_name = EXCLUDED.route_name;
+    route_name = EXCLUDED.route_name,
+    list_order = EXCLUDED.list_order;
 
 INSERT INTO stops (stop_id, route_id, stop_name, sequence_order, latitude, longitude, radius_meters)
 VALUES 

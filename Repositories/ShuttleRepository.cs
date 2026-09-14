@@ -19,7 +19,7 @@ public class ShuttleRepository
                 route_id AS RouteId,
                 route_name AS RouteName
             FROM routes
-            ORDER BY route_id;";
+            ORDER BY list_order;";
         return await _db.QueryAsync<RouteDto>(sql);
     }
 
