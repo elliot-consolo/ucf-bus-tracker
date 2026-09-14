@@ -304,13 +304,12 @@ Whenever changes are pushed to GitHub, Railway automatically rebuilds and redepl
 
 # Current Status
 
-The application currently supports **17 shuttle routes**, with stop data being added as the project continues to develop.
+The application currently supports **19 shuttle routes** covering nearly **100 stops**.
 
 The historical visualization currently combines data collected across multiple days. As more data is collected, the graph will provide increasingly complete coverage of shuttle travel times throughout the day.
 
 ### Planned Features
 
-- More complete stop coverage across all routes
 - Day-specific historical filtering
 - Viewing detailed data through each graph point
 - Additional filtering and comparison capabilities
