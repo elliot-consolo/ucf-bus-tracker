@@ -126,6 +126,26 @@
                 const response = await fetch(`api/congestion/analytics?routeId=${encodeURIComponent(routeId)}&startStopId=${startStopId}&endStopId=${endStopId}`);
                 const data = await response.json();
 
+                //calculate avg of avgDurationMinutes
+                let sum = 0;
+                let num = 0;
+                data.forEach(pt => {
+                    if (pt.avgDurationMinutes != null) {
+                        sum += pt.avgDurationMinutes;
+                        num++;
+                    }   
+                });
+                const avgValues = sum/num;
+
+                //remove outliers
+                let outlierMult = 2.5;
+                data.forEach(pt => {
+                    if (pt.avgDurationMinutes > (avgValues*outlierMult)) {
+                        pt.avgDurationMinutes = null;
+                        //console.log(pt.timeLabel + " removed");
+                    }   
+                });
+
                 renderChart(data);
             } catch (error) {
                 console.error("Failed to load shuttle data from API:", error);
