@@ -6,13 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UCF Shuttle Analytics Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" asp-append-version="true">
 </head>
 
 <body>
-    <h2>UCF Transit Analytics</h2>
+    <nav>
+        <ul class="navbar">
+            <li><a href="#live">Live Chart</a></li>
+            <li class="active"><a href="#agg">Aggregated Chart</a></li>
+            <li><a href="#hist">Daily History</a></li> 
+        </ul>
+    </nav>
 
-    <div class="controls-card">
+    <div id="top-margin"></div>
+
+    <h2 class="m">UCF Transit Analytics</h2>
+
+    <div class="m controls-card">
         
         <div class="form-group">
             <label for="routeSelect">Select Route</label>
@@ -38,7 +48,7 @@
         <button id="loadChartBtn" onclick="fetchChartData()">Update Chart</button>
     </div>
 
-    <div class="chart-container">
+    <div class="m chart-container">
         <canvas id="transitChart"></canvas>
     </div>
 
