@@ -12,9 +12,9 @@
 <body>
     <nav>
         <ul class="navbar">
-            <li><a href="#live">Live Chart</a></li>
-            <li class="active"><a href="#agg">Aggregated Chart</a></li>
-            <li><a href="#hist">Daily History</a></li> 
+            <li><button id="liveBtn">Live Chart</button></li>
+            <li class="active"><button id="aggBtn">Aggregated Chart</button></li>
+            <li><button id="histBtn">Daily History</button></li> 
         </ul>
     </nav>
 
@@ -48,6 +48,13 @@
         <button id="loadChartBtn" onclick="fetchChartData()">Update Chart</button>
     </div>
 
+    <div style="display: none" class="m controls-card" id="histControls">
+        <label for="dateInput">Select Date</label>
+        <input type="date" id="dateInput" min="2026-09-09">
+
+
+    </div>
+
     <div class="m chart-container">
         <canvas id="transitChart"></canvas>
     </div>
@@ -56,8 +63,54 @@
         let transitChart = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
+            setDate();
             await loadRoutes();
         });
+
+        const liveChartBtn = document.getElementById('liveBtn');
+        const aggChartBtn = document.getElementById('aggBtn');
+        const histChartBtn = document.getElementById('histBtn');
+
+        const histControls = document.getElementById('histControls');
+
+        liveChartBtn.addEventListener('click', () => {
+            cleanPage();
+            liveChartBtn.parentElement.classList.add('active');
+        });
+
+        aggChartBtn.addEventListener('click', () => {
+            cleanPage();
+            aggChartBtn.parentElement.classList.add('active');
+        });
+
+        histChartBtn.addEventListener('click', () => {
+            cleanPage();
+            histChartBtn.parentElement.classList.add('active');
+            histControls.style.display = 'block';
+        });
+
+
+        function cleanPage() {
+            liveChartBtn.parentElement.classList.remove('active');
+            aggChartBtn.parentElement.classList.remove('active');
+            histChartBtn.parentElement.classList.remove('active');
+
+            histControls.style.display = 'none';
+        }
+
+        function setDate() {
+            const today = new Date();
+
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const formattedToday = `${yyyy}-${mm}-${dd}`;
+
+            const dateInput = document.getElementById('dateInput');
+
+            dateInput.value = formattedToday;
+            dateInput.max = formattedToday;
+        }
 
         async function loadRoutes() {
             try {
