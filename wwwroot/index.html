@@ -63,7 +63,7 @@
         let transitChart = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
-            setDate();
+            
             await loadRoutes();
         });
 
@@ -85,6 +85,7 @@
 
         histChartBtn.addEventListener('click', () => {
             cleanPage();
+            setDate();
             histChartBtn.parentElement.classList.add('active');
             histControls.style.display = 'block';
         });
@@ -96,6 +97,7 @@
             histChartBtn.parentElement.classList.remove('active');
 
             histControls.style.display = 'none';
+            document.getElementById('dateInput').value = null;
         }
 
         function setDate() {
@@ -174,6 +176,7 @@
             const routeId = document.getElementById('routeSelect').value;
             const startStopId = document.getElementById('startStopSelect').value;
             const endStopId = document.getElementById('endStopSelect').value;
+            const date = document.getElementById('dateInput').value;
 
             if (!routeId || !startStopId || !endStopId) {
                 alert("Please select a Route, Start Stop, and End Stop.");
@@ -186,7 +189,7 @@
             }
 
             try {
-                const response = await fetch(`api/congestion/analytics?routeId=${encodeURIComponent(routeId)}&startStopId=${startStopId}&endStopId=${endStopId}`);
+                const response = await fetch(`api/congestion/analytics?routeId=${encodeURIComponent(routeId)}&startStopId=${startStopId}&endStopId=${endStopId}&date=${date}`);
                 const data = await response.json();
 
                 //calculate avg of avgDurationMinutes

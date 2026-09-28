@@ -85,7 +85,7 @@ public class CongestionController : ControllerBase
     }
 
     [HttpGet("analytics")]
-    public async Task<IActionResult> GetAnalytics([FromQuery] string routeId, [FromQuery] int startStopId, [FromQuery] int endStopId)
+    public async Task<IActionResult> GetAnalytics([FromQuery] string routeId, [FromQuery] int startStopId, [FromQuery] int endStopId, [FromQuery] string? date)
     {
         using var connection = new NpgsqlConnection(_connectionString);
 
@@ -94,7 +94,7 @@ public class CongestionController : ControllerBase
             return BadRequest("Invalid route or stop value(s)");
         }
 
-        var analytics = await _repository.GetAnalyticsAsync(routeId, startStopId, endStopId);
+        var analytics = await _repository.GetAnalyticsAsync(routeId, startStopId, endStopId, date);
         return Ok(analytics);
     }
 

@@ -2,6 +2,9 @@ namespace BusData.Repositories;
 using Dapper;
 using BusData.Models;
 using System.Data;
+using System;
+using System.Linq;
+using System.Text;
 
 public class ShuttleRepository
 {
@@ -42,18 +45,21 @@ public class ShuttleRepository
         return await _db.QueryAsync<StopDto>(sql, new {RouteId = routeId});
     }
 
-    public async Task<IEnumerable<TransitAnalyticsDto>> GetAnalyticsAsync(string routeId, int startStopId, int endStopId)
+    public async Task<IEnumerable<TransitAnalyticsDto>> GetAnalyticsAsync(string routeId, int startStopId, int endStopId, string? date)
     {
-        
 
-        var parameters = new
+        var template = new
         {
             RouteId = routeId,
             StartStop = startStopId,
             EndStop = endStopId
         };
 
-        string sql = @"
+        var parameters = new DynamicParameters(template);
+
+        var sql = new StringBuilder();
+
+        sql.Append(@"
             WITH params AS (
                 SELECT
                     @StartStop AS start_stop,
@@ -94,8 +100,16 @@ public class ShuttleRepository
                     vehicle_name
                 FROM bus_snapshots bs
                 CROSS JOIN params p
-                WHERE bs.route_id = p.route_id
-            ),
+                WHERE bs.route_id = p.route_id");
+
+        if (!string.IsNullOrWhiteSpace(date))
+        {
+            sql.Append(@" AND recorded_at >= (@Date || ' 00:00:00+00')::timestamptz 
+            AND recorded_at < ((@Date::date + INTERVAL '1 day') || '+00')::timestamptz");
+            parameters.Add("Date", date);
+        }
+        
+        sql.Append(@"),
 
             geofenced_snapshots AS (
                 SELECT
@@ -157,9 +171,9 @@ public class ShuttleRepository
             LEFT JOIN valid_trips vt
                 ON (vt.trip_minute AT TIME ZONE 'America/New_York')::time = m.minute_bucket::time
             GROUP BY m.minute_bucket
-            ORDER BY m.minute_bucket;";
+            ORDER BY m.minute_bucket;");
         
-        return await _db.QueryAsync<TransitAnalyticsDto>(sql, parameters);
+        return await _db.QueryAsync<TransitAnalyticsDto>(sql.ToString(), parameters);
         
     }
 }
