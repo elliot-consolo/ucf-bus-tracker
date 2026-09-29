@@ -76,19 +76,53 @@
         liveChartBtn.addEventListener('click', () => {
             cleanPage();
             liveChartBtn.parentElement.classList.add('active');
+            if (validData()) {
+                fetchChartData();
+            }
         });
 
         aggChartBtn.addEventListener('click', () => {
             cleanPage();
             aggChartBtn.parentElement.classList.add('active');
+            if (validData()) {
+                fetchChartData();
+            }
         });
 
         histChartBtn.addEventListener('click', () => {
             cleanPage();
-            setDate();
+
+            const dateInput = document.getElementById('dateInput');
+
+            if (!dateInput.value) {
+                const formattedToday = getDate();
+                dateInput.value = formattedToday;
+                dateInput.max = formattedToday;
+            }
+
             histChartBtn.parentElement.classList.add('active');
             histControls.style.display = 'block';
+
+            if (validData()) {
+                fetchChartData();
+            }
         });
+
+        function validData() {
+            const routeId = document.getElementById('routeSelect').value;
+            const startStopId = document.getElementById('startStopSelect').value;
+            const endStopId = document.getElementById('endStopSelect').value;
+
+            if (!routeId || !startStopId || !endStopId) {
+                return false;
+            }
+
+            if (startStopId === endStopId) {
+                return false;
+            }
+
+            return true;
+        }
 
 
         function cleanPage() {
@@ -97,21 +131,17 @@
             histChartBtn.parentElement.classList.remove('active');
 
             histControls.style.display = 'none';
-            document.getElementById('dateInput').value = null;
         }
 
-        function setDate() {
+        function getDate() {
             const today = new Date();
 
             const yyyy = today.getFullYear();
             const mm = String(today.getMonth() + 1).padStart(2, '0');
             const dd = String(today.getDate()).padStart(2, '0');
             const formattedToday = `${yyyy}-${mm}-${dd}`;
-
-            const dateInput = document.getElementById('dateInput');
-
-            dateInput.value = formattedToday;
-            dateInput.max = formattedToday;
+            return formattedToday;
+            
         }
 
         async function loadRoutes() {
@@ -176,7 +206,7 @@
             const routeId = document.getElementById('routeSelect').value;
             const startStopId = document.getElementById('startStopSelect').value;
             const endStopId = document.getElementById('endStopSelect').value;
-            const date = document.getElementById('dateInput').value;
+            
 
             if (!routeId || !startStopId || !endStopId) {
                 alert("Please select a Route, Start Stop, and End Stop.");
@@ -186,6 +216,16 @@
             if (startStopId === endStopId) {
                 alert("Start Stop and End Stop cannot be the same.");
                 return;
+            }
+
+            var date = '';
+            const active = document.querySelector('.active').children;
+
+            if (active[0].id == 'liveBtn') {
+                date = getDate();
+            }
+            else if (active[0].id == 'histBtn') {
+                date = document.getElementById('dateInput').value;
             }
 
             try {
