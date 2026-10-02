@@ -48,11 +48,20 @@
         <button id="loadChartBtn" onclick="fetchChartData()">Update Chart</button>
     </div>
 
-    <div style="display: none" class="m controls-card" id="histControls">
-        <label for="dateInput">Select Date</label>
-        <input type="date" id="dateInput" min="2026-09-09">
+    <div style="display: none" class="m hist-controls-card" id="histControls">
+        
+        <div class="date-container">
+            
+            <label for="dateInput">Select Date</label>
 
-
+            <div class="date-wrapper">
+                <button id="left">&lt</button>
+                <input type="date" id="dateInput" min="2026-09-09">
+                <button id="right">&gt</button>
+            </div>
+            
+            
+        </div>
     </div>
 
     <div class="m chart-container">
@@ -101,7 +110,7 @@
             }
 
             histChartBtn.parentElement.classList.add('active');
-            histControls.style.display = 'block';
+            histControls.style.display = 'flex';
 
             if (validData()) {
                 fetchChartData();
