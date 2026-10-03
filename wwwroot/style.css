@@ -140,3 +140,9 @@ button:hover {
     align-items: center;
     /*outline: 1px solid red !important;*/
 }
+
+button:disabled {
+    background-color: #e0e0e0;
+    color: #a0a0a0;
+    cursor: not-allowed;
+}

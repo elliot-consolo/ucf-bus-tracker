@@ -55,9 +55,9 @@
             <label for="dateInput">Select Date</label>
 
             <div class="date-wrapper">
-                <button id="left">&lt</button>
+                <button id="dateLeftBtn">&lt</button>
                 <input type="date" id="dateInput" min="2026-09-09">
-                <button id="right">&gt</button>
+                <button id="dateRightBtn">&gt</button>
             </div>
             
             
@@ -105,8 +105,10 @@
 
             if (!dateInput.value) {
                 const formattedToday = getDate();
+                const dateRightBtn = document.getElementById('dateRightBtn');
                 dateInput.value = formattedToday;
                 dateInput.max = formattedToday;
+                dateRightBtn.disabled = true;
             }
 
             histChartBtn.parentElement.classList.add('active');
@@ -116,6 +118,85 @@
                 fetchChartData();
             }
         });
+
+        const dateLeftBtn = document.getElementById('dateLeftBtn');
+        const dateRightBtn = document.getElementById('dateRightBtn');
+
+        dateLeftBtn.addEventListener('click', () => {
+            const dateInput = document.getElementById('dateInput');
+            const dateValue = dateInput.valueAsDate;
+
+            if (!dateValue) return;
+
+            dateValue.setDate(dateValue.getDate()-1);
+            
+            const minStr = dateInput.getAttribute('min');
+            const minDate = minStr ? new Date(minStr) : null;
+
+            if (!minDate) return;
+
+            if (dateValue < minDate) return;
+
+            dateInput.valueAsDate = dateValue;
+
+            const event = new Event('change', { bubbles: true});
+            dateInput.dispatchEvent(event);
+            
+            if (validData()) {
+                fetchChartData();
+            }
+        });
+
+        dateRightBtn.addEventListener('click', () => {
+            const dateInput = document.getElementById('dateInput');
+            const dateValue = dateInput.valueAsDate;
+
+            if (!dateValue) return;
+
+            dateValue.setDate(dateValue.getDate()+1);
+            
+            const maxStr = dateInput.getAttribute('max');
+            const maxDate = maxStr ? new Date(maxStr) : null;
+
+            if (!maxDate) return;
+
+            if (dateValue > maxDate) return;
+
+            dateInput.valueAsDate = dateValue;
+
+            const event = new Event('change', { bubbles: true});
+            dateInput.dispatchEvent(event);
+
+            if (validData()) {
+                fetchChartData();
+            }
+        });
+
+        document.getElementById('dateInput').addEventListener('change', (e) =>{
+            const dateValue = e.target.valueAsDate;
+            const minStr = e.target.getAttribute('min');
+            const maxStr = e.target.getAttribute('max');
+
+            const minDate = minStr ? new Date(minStr) : null;
+            const maxDate = maxStr ? new Date(maxStr) : null;
+
+            if (dateValue.toDateString() === minDate.toDateString()) {
+                dateLeftBtn.disabled = true;
+            }
+
+            if (dateValue.toDateString() === maxDate.toDateString()) {
+                dateRightBtn.disabled = true;
+            }
+
+            if (dateLeftBtn.disabled && dateValue > minDate) {
+                dateLeftBtn.disabled = false;
+            }
+
+            if (dateRightBtn.disabled && dateValue < maxDate) {
+                dateRightBtn.disabled = false;
+            }
+        });
+        
 
         function validData() {
             const routeId = document.getElementById('routeSelect').value;
@@ -150,7 +231,6 @@
             const dd = String(today.getDate()).padStart(2, '0');
             const formattedToday = `${yyyy}-${mm}-${dd}`;
             return formattedToday;
-            
         }
 
         async function loadRoutes() {
