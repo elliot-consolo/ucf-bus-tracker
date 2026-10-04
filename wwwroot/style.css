@@ -8,14 +8,14 @@ body {
 }
 
 .m {
-    margin: 30px;
+    margin: 1rem 2rem;
 }
 .controls-card {
     background: #ffffff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom: 25px;
+    margin-bottom: 1rem;
     display: flex;
     gap: 20px;
     align-items: flex-end;
@@ -67,7 +67,8 @@ button:hover {
 .navbar {
     position: fixed;
     top: 0;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
     list-style-type: none;
     margin: 0;
@@ -80,15 +81,39 @@ button:hover {
     z-index: 1000;
 }
 
-.navbar li:hover {
+.nav-left, .nav-right {
+  flex: 1;
+}
+
+.nav-left li {
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding: 0vh 5vh;
+}
+
+.nav-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nav-center {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    flex: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-center li:hover {
     background-color: #cbcbcb;
 }
 
-.navbar li {
+.nav-center li {
     border-bottom: 3px solid transparent;
 }
 
-.navbar li button {
+.nav-center li button {
     border-radius: 0px;
     background-color: var(--bg-color);
     display: block;
@@ -97,7 +122,7 @@ button:hover {
     text-decoration: none;
 }
 
-.navbar li.active {
+.nav-center li.active {
     border-bottom: 3px solid #007bff;
 }
 
@@ -108,7 +133,7 @@ button:hover {
 
 .hist-controls-card {
     background: #ffffff;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     display: flex;
@@ -145,4 +170,8 @@ button:disabled {
     background-color: #e0e0e0;
     color: #a0a0a0;
     cursor: not-allowed;
+}
+
+#chart-title {
+    text-align: center;
 }

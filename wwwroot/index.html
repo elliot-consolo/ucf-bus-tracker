@@ -12,15 +12,19 @@
 <body>
     <nav>
         <ul class="navbar">
-            <li><button id="liveBtn">Live Chart</button></li>
-            <li class="active"><button id="aggBtn">Aggregated Chart</button></li>
-            <li><button id="histBtn">Daily History</button></li> 
+            <div class="nav-left">
+                <li>UCF Bus Tracker</li>
+            </div>
+            <div class="nav-center">
+                <li><button id="liveBtn">Live Chart</button></li>
+                <li class="active"><button id="aggBtn">Aggregated Chart</button></li>
+                <li><button id="histBtn">Daily History</button></li> 
+            </div>
+            <div class="nav-right"></div>
         </ul>
     </nav>
 
     <div id="top-margin"></div>
-
-    <h2 class="m">UCF Transit Analytics</h2>
 
     <div class="m controls-card">
         
@@ -64,6 +68,8 @@
         </div>
     </div>
 
+    <h3 id="chart-title"></h3>
+
     <div class="m chart-container">
         <canvas id="transitChart"></canvas>
     </div>
@@ -79,12 +85,13 @@
         const liveChartBtn = document.getElementById('liveBtn');
         const aggChartBtn = document.getElementById('aggBtn');
         const histChartBtn = document.getElementById('histBtn');
-
+        const chartText = document.getElementById('chart-title');
         const histControls = document.getElementById('histControls');
 
         liveChartBtn.addEventListener('click', () => {
             cleanPage();
             liveChartBtn.parentElement.classList.add('active');
+            chartText.innerText = "Today's Travel Times";
             if (validData()) {
                 fetchChartData();
             }
@@ -93,6 +100,7 @@
         aggChartBtn.addEventListener('click', () => {
             cleanPage();
             aggChartBtn.parentElement.classList.add('active');
+            chartText.innerText = "Overall Travel Times";
             if (validData()) {
                 fetchChartData();
             }
@@ -108,8 +116,11 @@
                 const dateRightBtn = document.getElementById('dateRightBtn');
                 dateInput.value = formattedToday;
                 dateInput.max = formattedToday;
-                dateRightBtn.disabled = true;
+                dateRightBtn.disabled = true;                
             }
+
+            const dateString = trimDateString(dateInput.valueAsDate.toUTCString());
+            chartText.innerText = `${dateString} Travel Times`;
 
             histChartBtn.parentElement.classList.add('active');
             histControls.style.display = 'flex';
@@ -141,7 +152,7 @@
 
             const event = new Event('change', { bubbles: true});
             dateInput.dispatchEvent(event);
-            
+
             if (validData()) {
                 fetchChartData();
             }
@@ -176,6 +187,10 @@
             const dateValue = e.target.valueAsDate;
             const minStr = e.target.getAttribute('min');
             const maxStr = e.target.getAttribute('max');
+            
+            const dateString = trimDateString(dateValue.toUTCString());
+            const chartText = document.getElementById('chart-title');
+            chartText.innerText = `${dateString} Travel Times`;
 
             const minDate = minStr ? new Date(minStr) : null;
             const maxDate = maxStr ? new Date(maxStr) : null;
@@ -231,6 +246,39 @@
             const dd = String(today.getDate()).padStart(2, '0');
             const formattedToday = `${yyyy}-${mm}-${dd}`;
             return formattedToday;
+        }
+
+        function trimDateString(str) {
+            const shortStr = str.substring(0,16);
+            var newStr = '';
+            switch(shortStr.substring(0,3)){
+                case 'Mon':
+                    newStr += 'Monday ';
+                    break;
+                case 'Tue':
+                    newStr += 'Tuesday ';
+                    break;
+                case 'Wed':
+                    newStr += 'Wednesday ';
+                    break;
+                case 'Thu':
+                    newStr += 'Thursday ';
+                    break;
+                case 'Fri':
+                    newStr += 'Friday ';
+                    break;
+                case 'Sat':
+                    newStr += 'Saturday ';
+                    break;
+                case 'Sun':
+                    newStr += 'Sunday ';
+                    break;
+            }
+            newStr += shortStr.substring(8,12);
+            newStr += shortStr.substring(5,8);
+            newStr += shortStr.substring(12,17);
+
+            return newStr;
         }
 
         async function loadRoutes() {
