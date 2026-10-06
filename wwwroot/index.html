@@ -248,6 +248,16 @@
             return formattedToday;
         }
 
+        function getDateUTC() {
+            const now = new Date();
+
+            const yyyy = now.getUTCFullYear();
+            const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+            const dd = String(now.getUTCDate()).padStart(2, '0');
+
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
         function trimDateString(str) {
             const shortStr = str.substring(0,16);
             var newStr = '';
@@ -359,10 +369,11 @@
             const active = document.querySelector('.active').children;
 
             if (active[0].id == 'liveBtn') {
-                date = getDate();
+                date = getDateUTC();
             }
             else if (active[0].id == 'histBtn') {
-                date = document.getElementById('dateInput').value;
+                tmpDate = document.getElementById('dateInput').valueAsDate;
+                date = tmpDate.toISOString().split('T')[0];
             }
 
             try {
