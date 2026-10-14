@@ -57,7 +57,9 @@ public class ShuttlePollerService : BackgroundService
 
         string sql = @"
             INSERT INTO bus_snapshots (vehicle_id, route_id, latitude, longitude, speed, recorded_at, vehicle_name)
-            VALUES (@VehicleID, @RouteID, @Latitude, @Longitude, @Speed, NOW(), @VehicleName);";
+            SELECT @VehicleID, @RouteID, @Latitude, @Longitude, @Speed, NOW(), @VehicleName
+            WHERE EXISTS (SELECT 1 FROM routes WHERE route_id = @RouteID::varchar);";
+        // rows with routes not in the routes table are skipped instead of failing the whole batch
         // Dapper executes batch insert for all items in list
         int rowsInserted = await connection.ExecuteAsync(sql, vehicles);
         _logger.LogInformation("Logged {Count} shuttle snapshots to BusDb.", rowsInserted);
