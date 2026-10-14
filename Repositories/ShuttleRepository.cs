@@ -104,8 +104,9 @@ public class ShuttleRepository
 
         if (!string.IsNullOrWhiteSpace(date))
         {
-            sql.Append(@" AND recorded_at >= (@Date || ' 00:00:00+00')::timestamptz 
-            AND recorded_at < ((@Date::date + INTERVAL '1 day') || '+00')::timestamptz");
+            //treat @Date as a calendar day in Eastern time (handles EST/EDT automatically)
+            sql.Append(@" AND recorded_at >= (@Date::date)::timestamp AT TIME ZONE 'America/New_York'
+            AND recorded_at < (@Date::date + 1)::timestamp AT TIME ZONE 'America/New_York'");
             parameters.Add("Date", date);
         }
         
