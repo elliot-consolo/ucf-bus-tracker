@@ -3,6 +3,7 @@ appsettings.Development.json
 appsettings.Local.json
 *.env
 bus_db_backup.sql
+chart_data.sql
 
 # .NET Build artifacts & binary outputs
 bin/
