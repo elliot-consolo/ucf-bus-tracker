@@ -48,7 +48,7 @@ public class SnapshotFilterService : BackgroundService
         // Only scan records created recently rather than the entire historical table
         string sql = @"
             DELETE FROM bus_snapshots snaps
-            WHERE snaps.created_at >= NOW() - INTERVAL '15 minutes'
+            WHERE snaps.recorded_at >= NOW() - INTERVAL '15 minutes'
               AND NOT EXISTS (
                   SELECT 1 
                   FROM stops
