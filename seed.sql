@@ -156,7 +156,7 @@ VALUES
 
     -- Emergency Housing TownePlace
     ( 98, '70', 'Lynx Transit Center', 1, 28.6006, -81.2051, 70),
-    ( 99, '70', 'TownePlace Suites', 2, 28.6002347293, -81.2147988745, 30)
+    ( 99, '70', 'TownePlace Suites', 2, 28.6002347293, -81.2147988745, 30),
     
     --The Rook
     ( 100, '73', 'Transit Center', 1, 28.600619182856253, -81.2050703902114, 70),
@@ -164,7 +164,7 @@ VALUES
 
     --Vibe #1
     ( 102, '74', 'Student Union', 1, 28.602918, -81.200956, 30),
-    ( 103, '74', 'The Vibe', 2, 28.6026872793, -81.2169309142, 30),
+    ( 103, '74', 'The Vibe', 2, 28.6026872793, -81.2169309142, 30)
 
 ON CONFLICT (stop_id) 
 DO UPDATE SET
