@@ -12,8 +12,11 @@ builder.Services.AddScoped<IDbConnection>((sp) =>
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddHostedService<ShuttlePollerService>();
-builder.Services.AddHostedService<SnapshotFilterService>();
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddHostedService<ShuttlePollerService>();
+    builder.Services.AddHostedService<SnapshotFilterService>();
+}
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<ShuttleRepository>();
