@@ -7,72 +7,92 @@
     <title>UCF Shuttle Analytics Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css" asp-append-version="true">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 
 <body>
-    <nav>
-        <ul class="navbar">
-            <div class="nav-left">
-                <li>UCF Bus Tracker</li>
-            </div>
-            <div class="nav-center">
-                <li><button id="liveBtn">Live Chart</button></li>
-                <li class="active"><button id="aggBtn">Aggregated Chart</button></li>
-                <li><button id="histBtn">Daily History</button></li> 
-            </div>
-            <div class="nav-right"></div>
+    <nav class="navbar">
+        <div class="nav-left brand">
+            <span class="brand-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-bus-stop"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 4a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -4" /><path d="M16 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M10 5h7c2.761 0 5 3.134 5 7v5h-2" /><path d="M16 17h-8" /><path d="M16 5l1.5 7h4.5" /><path d="M9.5 10h7.5" /><path d="M12 5v5" /><path d="M5 9v11" /></svg>
+            </span>
+            <span class="brand-text"><span class="brand-accent">UCF</span> Bus Tracker</span>
+        </div>
+        <ul class="nav-center">
+            <li><button id="liveBtn">Live Chart</button></li>
+            <li class="active"><button id="aggBtn">Aggregated Chart</button></li>
+            <li><button id="histBtn">Daily History</button></li>
         </ul>
+        <div class="nav-right"></div>
     </nav>
 
-    <div id="top-margin"></div>
+    <div class="m controls-row">
 
-    <div class="m controls-card">
-        
-        <div class="form-group">
-            <label for="routeSelect">Select Route</label>
-            <select id="routeSelect">
-                <option value="">-- Choose a Route --</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="startStopSelect">Start Stop</label>
-            <select id="startStopSelect" disabled>
-                <option value="">-- Select Route First --</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="endStopSelect">End Stop</label>
-            <select id="endStopSelect" disabled>
-                <option value="">-- Select Route First --</option>
-            </select>
-        </div>
-
-        <button id="loadChartBtn" onclick="fetchChartData()">Update Chart</button>
-    </div>
-
-    <div style="display: none" class="m hist-controls-card" id="histControls">
-        
-        <div class="date-container">
-            
-            <label for="dateInput">Select Date</label>
-
-            <div class="date-wrapper">
-                <button id="dateLeftBtn">&lt</button>
-                <input type="date" id="dateInput" min="2026-09-09">
-                <button id="dateRightBtn">&gt</button>
+        <section class="card route-card">
+            <h2 class="card-title">Route</h2>
+            <div class="form-group">
+                <label for="routeSelect">Shuttle route</label>
+                <select id="routeSelect">
+                    <option value="">Choose a route</option>
+                </select>
             </div>
-            
-            
+        </section>
+
+        <section class="card stops-card">
+            <h2 class="card-title">Trip</h2>
+            <div class="stops-row">
+                <div class="form-group">
+                    <label for="startStopSelect">Departing from</label>
+                    <select id="startStopSelect" disabled>
+                        <option value="">Choose a route first</option>
+                    </select>
+                </div>
+
+                <div class="stop-connector" aria-hidden="true"><span></span></div>
+
+                <div class="form-group">
+                    <label for="endStopSelect">Arriving at</label>
+                    <select id="endStopSelect" disabled>
+                        <option value="">Choose a route first</option>
+                    </select>
+                </div>
+
+                <button id="loadChartBtn" onclick="fetchChartData()" disabled>Update Chart</button>
+            </div>
+        </section>
+
+        <section style="display: none" class="card date-card" id="histControls">
+            <h2 class="card-title">Date</h2>
+            <div class="form-group">
+                <label for="dateInput">Service day</label>
+                <div class="date-wrapper">
+                    <button id="dateLeftBtn" aria-label="Previous day">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                    <input type="date" id="dateInput" min="2026-09-09">
+                    <button id="dateRightBtn" aria-label="Next day">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section class="m card chart-card">
+        <h3 id="chart-title">Overall Travel Times</h3>
+        <div class="chart-body">
+            <canvas id="transitChart"></canvas>
+            <div class="chart-loading" id="chartLoading" hidden>
+                <svg class="wheel" width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="24" cy="24" r="20" stroke-width="5"/>
+                    <circle cx="24" cy="24" r="4" stroke-width="3"/>
+                    <path d="M24 20V6M24 28v14M20.5 22 8.4 15M27.5 26l12.1 7M20.5 26 8.4 33M27.5 22l12.1-7" stroke-width="2.5"/>
+                </svg>
+                <span>Loading travel times…</span>
+            </div>
+            <div class="chart-empty" id="chartEmpty">Pick a route and two stops to see travel times.</div>
         </div>
-    </div>
-
-    <h3 id="chart-title"></h3>
-
-    <div class="m chart-container">
-        <canvas id="transitChart"></canvas>
-    </div>
+    </section>
 
     <script>
         let transitChart = null;
@@ -123,7 +143,7 @@
             chartText.innerText = `${dateString} Travel Times`;
 
             histChartBtn.parentElement.classList.add('active');
-            histControls.style.display = 'flex';
+            histControls.style.display = 'block';
 
             if (validData()) {
                 fetchChartData();
@@ -230,6 +250,21 @@
         }
 
 
+        const loadChartBtn = document.getElementById('loadChartBtn');
+        const chartLoading = document.getElementById('chartLoading');
+
+        function updateLoadBtnState() {
+            loadChartBtn.disabled = !validData() || !chartLoading.hidden;
+        }
+
+        document.getElementById('startStopSelect').addEventListener('change', updateLoadBtnState);
+        document.getElementById('endStopSelect').addEventListener('change', updateLoadBtnState);
+
+        function setLoading(isLoading) {
+            chartLoading.hidden = !isLoading;
+            updateLoadBtnState();
+        }
+
         function cleanPage() {
             liveChartBtn.parentElement.classList.remove('active');
             aggChartBtn.parentElement.classList.remove('active');
@@ -292,7 +327,7 @@
                 const routes = await response.json();
 
                 const routeSelect = document.getElementById('routeSelect');
-                routeSelect.innerHTML = '<option value="">-- Choose a Route --</option>';
+                routeSelect.innerHTML = '<option value="">Choose a route</option>';
 
                 routes.forEach(route => {
                     const option = document.createElement('option');
@@ -312,10 +347,11 @@
             const endSelect = document.getElementById('endStopSelect');
 
             if (!routeId) {
-                startSelect.innerHTML = '<option value="">-- Select Route First --</option>';
-                endSelect.innerHTML = '<option value="">-- Select Route First --</option>';
+                startSelect.innerHTML = '<option value="">Choose a route first</option>';
+                endSelect.innerHTML = '<option value="">Choose a route first</option>';
                 startSelect.disabled = true;
                 endSelect.disabled = true;
+                updateLoadBtnState();
                 return;
             }
 
@@ -323,14 +359,17 @@
                 const response = await fetch(`api/transit/stops?routeId=${encodeURIComponent(routeId)}`);
                 const stops = await response.json();
 
-                populateStopsDropdown(startSelect, stops, "-- Select Start Stop --");
-                populateStopsDropdown(endSelect, stops, "-- Select End Stop --");
+                populateStopsDropdown(startSelect, stops, "Choose where you board");
+                populateStopsDropdown(endSelect, stops, "Choose where you get off");
 
                 startSelect.disabled = false;
                 endSelect.disabled = false;
             }
             catch (err) {
                 console.error("Error loading stops:", err);
+            }
+            finally {
+                updateLoadBtnState();
             }
         });
 
@@ -371,6 +410,8 @@
                 date = tmpDate.toISOString().split('T')[0];
             }
 
+            setLoading(true);
+
             try {
                 const response = await fetch(`api/congestion/analytics?routeId=${encodeURIComponent(routeId)}&startStopId=${startStopId}&endStopId=${endStopId}&date=${date}`);
                 const data = await response.json();
@@ -398,6 +439,8 @@
                 renderChart(data);
             } catch (error) {
                 console.error("Failed to load shuttle data from API:", error);
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -408,6 +451,8 @@
             if(transitChart) {
                 transitChart.destroy();
             }
+
+            document.getElementById('chartEmpty').hidden = true;
 
             transitChart = new Chart(ctx, {
                 type: 'line',
@@ -421,7 +466,10 @@
 
                         spanGaps: true,
 
-                        borderColor: '#007bff',
+                        borderColor: '#ffc904',
+                        backgroundColor: 'rgba(255, 201, 4, 0.10)',
+                        pointBackgroundColor: '#ffc904',
+                        fill: true,
                         hitRadius: 2,
                         pointRadius: 1,
                         pointHoverRadius: 6,
@@ -432,10 +480,22 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#f2f2f3', boxWidth: 12 } },
+                        tooltip: {
+                            backgroundColor: '#000000',
+                            borderColor: '#3a3a40',
+                            borderWidth: 1,
+                            titleColor: '#ffc904',
+                            bodyColor: '#f2f2f3'
+                        }
+                    },
                     scales: {
                         x: {
                             grid: { display: false },
+                            border: { color: '#3a3a40' },
                             ticks: {
+                                color: '#9b9ba3',
                                 autoSkip: false,
                                 maxRotation: 0,
                                 //reduce label ticks
@@ -447,7 +507,10 @@
                         },
                         y: {
                             beginAtZero: true,
-                            title: { display: true, text: 'Minutes' }
+                            grid: { color: '#26262b' },
+                            border: { color: '#3a3a40' },
+                            ticks: { color: '#9b9ba3' },
+                            title: { display: true, text: 'Minutes', color: '#9b9ba3' }
                         }
                     }
                 }

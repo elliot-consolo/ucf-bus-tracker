@@ -1,177 +1,468 @@
+:root {
+    --bg: #0b0b0c;
+    --surface: #151517;
+    --surface-2: #1d1d20;
+    --border: #2b2b30;
+    --border-strong: #3a3a40;
+    --text: #f2f2f3;
+    --muted: #9b9ba3;
+    --gold: #ffc904;
+    --gold-hover: #ffd84d;
+    --gold-soft: rgba(255, 201, 4, 0.12);
+    --on-gold: #111111;
+    --radius: 10px;
+    --control-h: 42px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: "Segoe UI", Roboto, sans-serif;
     margin: 0;
     padding: 0;
-    --bg-color: #f8f9fa;
-    background-color: var(--bg-color);
-    color: #333;
+    background-color: var(--bg);
+    color: var(--text);
+    color-scheme: dark;
 }
 
 .m {
     margin: 1rem 2rem;
 }
-.controls-card {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom: 1rem;
-    display: flex;
-    gap: 20px;
-    align-items: flex-end;
-    flex-wrap: wrap;
-}
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 200px;
-}
-label {
-    font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #555;
-}
-select, button {
-    padding: 10px 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s;
-}
-select:focus {
-    border-color: #007bff;
-}
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-}
-button:hover {
-    background-color: #0056b3;
-}
-.chart-container {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    position: relative;
-    height: 80vh;
-}
+
+/* ---------- Navbar ---------- */
 
 .navbar {
-    position: fixed;
+    position: sticky;
     top: 0;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    border: 1px solid #e7e7e7;
-
-    --bg-color: #f3f3f3;
-    background-color: var(--bg-color);
     z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding: 0 2rem;
+    background-color: #000000;
+    border-bottom: 1px solid var(--border);
 }
 
 .nav-left, .nav-right {
-  flex: 1;
-}
-
-.nav-left li {
-    font-size: 1.25rem;
-    font-weight: bold;
-    padding: 0vh 5vh;
+    flex: 1;
 }
 
 .nav-right {
-  display: flex;
-  justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+}
+
+.brand-icon {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background-color: var(--gold);
+    color: var(--on-gold);
+}
+
+.brand-accent {
+    color: var(--gold);
 }
 
 .nav-center {
     display: flex;
     justify-content: center;
+    align-self: stretch;
     list-style: none;
-    flex: 1;
     margin: 0;
     padding: 0;
 }
 
-.nav-center li:hover {
-    background-color: #cbcbcb;
-}
-
 .nav-center li {
-    border-bottom: 3px solid transparent;
+    display: flex;
+    border-bottom: 2px solid transparent;
 }
 
 .nav-center li button {
-    border-radius: 0px;
-    background-color: var(--bg-color);
-    display: block;
-    color: black;
-    padding: 14px 16px;
-    text-decoration: none;
+    height: 100%;
+    padding: 0 16px;
+    border-radius: 0;
+    background: none;
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.nav-center li button:hover {
+    background: none;
+    color: var(--text);
 }
 
 .nav-center li.active {
-    border-bottom: 3px solid #007bff;
+    border-bottom-color: var(--gold);
 }
 
-#top-margin {
-    margin-top: 60px;
+.nav-center li.active button {
+    color: var(--text);
 }
 
+/* ---------- Controls ---------- */
 
-.hist-controls-card {
-    background: #ffffff;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+.controls-row {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 1rem;
 }
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px 20px;
+}
+
+.card-title {
+    margin: 0 0 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.route-card {
+    flex: 0 1 260px;
+    min-width: 220px;
+}
+
+.stops-card {
+    flex: 1 1 520px;
+}
+
+.date-card {
+    flex: 0 0 auto;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+select,
+input[type="date"] {
+    height: var(--control-h);
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background-color: var(--surface-2);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+select {
+    width: 100%;
+    padding-right: 36px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239b9ba3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    cursor: pointer;
+}
+
+select option {
+    background-color: var(--surface-2);
+    color: var(--text);
+}
+
+select:hover:not(:disabled),
+input[type="date"]:hover {
+    border-color: #55555c;
+}
+
+select:focus,
+input[type="date"]:focus {
+    border-color: var(--gold);
+}
+
+select:disabled {
+    color: var(--muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+button {
+    height: var(--control-h);
+    padding: 0 18px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--gold);
+    color: var(--on-gold);
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+button:hover {
+    background-color: var(--gold-hover);
+}
+
+button:disabled,
+button:disabled:hover {
+    background-color: var(--surface-2);
+    color: #5c5c63;
+    cursor: not-allowed;
+}
+
+/* Stops: From ····· To */
+
+.stops-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.stops-row .form-group {
+    flex: 1;
+}
+
+.stop-connector {
+    flex: 0 1 90px;
+    min-width: 40px;
+    height: var(--control-h);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.stop-connector::before,
+.stop-connector::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+}
+
+.stop-connector::after {
+    background-color: var(--gold);
+}
+
+.stop-connector span {
+    flex: 1;
+    border-top: 2px dotted var(--gold);
+    opacity: 0.8;
+}
+
+.stops-row #loadChartBtn {
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+/* Date picker */
 
 .date-wrapper {
     display: flex;
     align-items: stretch;
-    flex-direction: row;
-    gap: 10px;
-    height: 50%; 
 }
 
-.date-wrapper input{
-    font-size: 1rem;
+.date-wrapper button {
+    width: var(--control-h);
+    padding: 0;
+    display: grid;
+    place-items: center;
+    background-color: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
 }
 
-.date-wrapper button{
-    line-height: 0%;
+.date-wrapper button:hover:not(:disabled) {
+    background-color: #2a2a2e;
+    color: var(--gold);
 }
 
-.date-container {
-    height: 10vh;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    align-items: center;
-    /*outline: 1px solid red !important;*/
+.date-wrapper button:disabled {
+    color: #4a4a50;
 }
 
-button:disabled {
-    background-color: #e0e0e0;
-    color: #a0a0a0;
-    cursor: not-allowed;
+#dateLeftBtn {
+    border-radius: 8px 0 0 8px;
+    border-right: none;
+}
+
+#dateRightBtn {
+    border-radius: 0 8px 8px 0;
+    border-left: none;
+}
+
+.date-wrapper input[type="date"] {
+    border-radius: 0;
+    min-width: 150px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+/* ---------- Chart ---------- */
+
+.chart-card {
+    padding: 16px 20px 20px;
 }
 
 #chart-title {
+    margin: 0 0 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.chart-body {
+    position: relative;
+    height: 70vh;
+    min-height: 320px;
+}
+
+.chart-empty {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-size: 0.95rem;
     text-align: center;
+    padding: 0 1rem;
+}
+
+.chart-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: rgba(21, 21, 23, 0.75);
+    color: var(--muted);
+    font-size: 0.9rem;
+    border-radius: 6px;
+}
+
+.chart-loading:not([hidden]) ~ .chart-empty {
+    visibility: hidden;
+}
+
+.chart-loading[hidden],
+.chart-empty[hidden] {
+    display: none;
+}
+
+.wheel {
+    color: var(--gold);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wheel { animation-duration: 3s; }
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 760px) {
+    .m {
+        margin: 1rem;
+    }
+
+    .navbar {
+        padding: 0 1rem;
+    }
+
+    .nav-right {
+        display: none;
+    }
+
+    .brand-text {
+        display: none;
+    }
+
+    .nav-left {
+        flex: 0 0 auto;
+        margin-right: 8px;
+    }
+
+    .nav-center {
+        flex: 1;
+        min-width: 0;
+        overflow-x: auto;
+        justify-content: flex-start;
+    }
+
+    .nav-center li button {
+        padding: 0 10px;
+    }
+
+    .route-card,
+    .stops-card,
+    .date-card {
+        flex: 1 1 100%;
+    }
+
+    .stops-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+    }
+
+    .stop-connector {
+        flex: 0 0 auto;
+        height: 48px;
+        width: 8px;
+        min-width: 0;
+        margin-left: 16px;
+        flex-direction: column;
+    }
+
+    .stop-connector span {
+        align-self: center;
+        width: 0;
+        border-top: none;
+        border-left: 2px dotted var(--gold);
+    }
+
+    .stops-row #loadChartBtn {
+        margin: 12px 0 0;
+    }
+
+    .date-wrapper input[type="date"] {
+        flex: 1;
+    }
 }
